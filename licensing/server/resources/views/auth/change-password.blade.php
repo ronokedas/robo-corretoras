@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trocar senha | EvePulse</title><link rel="stylesheet" href="/admin.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trocar senha | EvePulse</title><link rel="stylesheet" href="{{ asset('admin.css') }}"></head>
 <body class="login">
 <form method="post" action="{{ route('password.update') }}" class="login-box">
 @csrf

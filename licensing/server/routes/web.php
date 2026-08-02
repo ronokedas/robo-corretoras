@@ -5,8 +5,8 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'form'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login.submit');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/change-password', [AuthController::class, 'changeForm'])->name('password.change');
     Route::post('/change-password', [AuthController::class, 'change'])->name('password.update');
@@ -24,4 +24,4 @@ Route::middleware(['auth', 'password.changed'])->prefix('admin')->name('admin.')
     Route::post('/releases', [AdminController::class, 'createRelease'])->name('releases.create');
 });
 
-Route::redirect('/', '/admin/licenses');
+Route::get('/', fn () => redirect()->route('admin.licenses'));
