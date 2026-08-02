@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.env
+.venv/
+logs/
+.pytest_cache/
+build/
+dist/
+release/
+.tools/
+artifacts/
+*.spec.bak
+evepulse_desktop/production_config.py

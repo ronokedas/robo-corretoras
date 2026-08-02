@@ -1,0 +1,67 @@
+name: evepulse-license-local
+
+services:
+  license-api:
+    build:
+      context: ./server
+      target: local
+    container_name: evepulse-license-api
+    environment:
+      APP_NAME: EvePulse
+      APP_ENV: local
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL:-http://127.0.0.1:8042}
+      LOG_CHANNEL: stderr
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${MYSQL_DATABASE}
+      DB_USERNAME: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      LICENSE_PRIVATE_KEY: ${LICENSE_PRIVATE_KEY}
+      LICENSE_PUBLIC_KEY: ${LICENSE_PUBLIC_KEY}
+      LICENSE_LEASE_MINUTES: ${LICENSE_LEASE_MINUTES:-4320}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrador}
+    ports:
+      - "127.0.0.1:8042:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8000/up') === false);"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    networks: [frontend, backend]
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    container_name: evepulse-license-mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - evepulse_license_mysql_data_final:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks: [backend]
+    restart: unless-stopped
+
+networks:
+  frontend:
+  backend:
+    internal: true
+
+volumes:
+  evepulse_license_mysql_data_final:

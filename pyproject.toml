@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evemex-trading-bot"
+version = "0.1.0"
+description = "Cliente não oficial da Evemex e robô M1 de reversão de três velas"
+requires-python = ">=3.11"
+dependencies = ["certifi>=2025.1"]
+
+[project.optional-dependencies]
+desktop = [
+    "PySide6==6.8.3",
+    "websocket-client==1.8.0",
+    "PyNaCl==1.5.0",
+    "keyring==25.6.0",
+]
+build = [
+    "pyinstaller==6.12.0",
+    "Pillow>=11.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["evemexapi*"]
