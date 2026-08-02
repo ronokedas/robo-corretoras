@@ -7,9 +7,16 @@ param(
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $LicenseUrl = $LicenseUrl.TrimEnd('/')
-if ($LicenseUrl -notmatch '^https://[A-Za-z0-9.-]+$') {
-    throw 'LicenseUrl deve ser uma URL HTTPS sem caminho.'
+$parsedUrl = $null
+if (-not [Uri]::TryCreate($LicenseUrl, [UriKind]::Absolute, [ref]$parsedUrl) -or
+    $parsedUrl.Scheme -ne 'https' -or
+    -not $parsedUrl.Host -or
+    $parsedUrl.UserInfo -or
+    $parsedUrl.Query -or
+    $parsedUrl.Fragment) {
+    throw 'LicenseUrl deve ser uma URL HTTPS válida, opcionalmente com um caminho como /robo.'
 }
+$LicenseUrl = $parsedUrl.GetLeftPart([UriPartial]::Path).TrimEnd('/')
 if ($PublicKey -notmatch '^[A-Za-z0-9_-]{43}$') {
     throw 'A chave pública Ed25519 deve ter 43 caracteres em base64url.'
 }

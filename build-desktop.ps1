@@ -38,7 +38,7 @@ if ($makensis) {
     } finally {
         Pop-Location
     }
-    Write-Host "Instalador criado em release\EvePulseTrader-Setup-1.0.2.exe"
+    Write-Host "Instalador criado em release\EvePulseTrader-Setup-1.0.3.exe"
 } else {
     Write-Warning "NSIS não encontrado. O aplicativo portátil foi criado em dist\EvePulseTrader."
 }
