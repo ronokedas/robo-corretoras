@@ -7,9 +7,12 @@ REPO_DIR="$(cd -- "$LICENSING_DIR/.." && pwd)"
 ENV_FILE="$LICENSING_DIR/.env.production"
 COMPOSE_FILE="$LICENSING_DIR/compose.production.yml"
 [[ -f "$ENV_FILE" ]] || { echo "Ambiente de produção ausente." >&2; exit 1; }
-cd "$REPO_DIR"
-git config --global --add safe.directory "$REPO_DIR"
-git pull --ff-only
+REPO_OWNER="$(stat -c '%U' "$REPO_DIR")"
+if [[ "$REPO_OWNER" == root ]]; then
+  git -C "$REPO_DIR" pull --ff-only
+else
+  runuser -u "$REPO_OWNER" -- git -C "$REPO_DIR" pull --ff-only
+fi
 cd "$LICENSING_DIR"
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" build --pull
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d
