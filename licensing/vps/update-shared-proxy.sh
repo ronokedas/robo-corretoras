@@ -13,8 +13,12 @@ ENV_FILE="$LICENSING_DIR/.env.production"
 COMPOSE_FILE="$LICENSING_DIR/compose.shared-proxy.yml"
 
 [[ -f "$ENV_FILE" ]] || { echo "Arquivo de produção não encontrado: $ENV_FILE" >&2; exit 1; }
-git config --global --add safe.directory "$REPO_DIR"
-git -C "$REPO_DIR" pull --ff-only
+REPO_OWNER="$(stat -c '%U' "$REPO_DIR")"
+if [[ "$REPO_OWNER" == root ]]; then
+  git -C "$REPO_DIR" pull --ff-only
+else
+  runuser -u "$REPO_OWNER" -- git -C "$REPO_DIR" pull --ff-only
+fi
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" build --pull
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --remove-orphans
 docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" ps
