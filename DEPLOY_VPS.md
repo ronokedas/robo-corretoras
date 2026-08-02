@@ -1,5 +1,28 @@
 # Instalação no VPS — robolite.4dtech.com.br
 
+## Instalação no Caddy existente em `4dtech.com.br/robo`
+
+Quando as portas 80 e 443 já pertencem ao Caddy de outro sistema, use a composição de proxy compartilhado. O endereço canônico é `https://www.4dtech.com.br/robo`; o domínio sem `www` redireciona preservando o caminho.
+
+```bash
+cd /opt/robo-corretoras
+sudo EVE_APP_URL="https://www.4dtech.com.br/robo" \
+  EVE_BASE_PATH="/robo" \
+  SESSION_DOMAIN="www.4dtech.com.br" \
+  PROXY_NETWORK="html-em-pdf_default" \
+  ADMIN_EMAIL="SEU_EMAIL" \
+  bash licensing/vps/install-shared-proxy.sh
+```
+
+Insira `licensing/caddy-robo-snippet.txt` antes do `handle` geral do site principal, valide o Caddyfile e recarregue o proxy. O Compose novo não publica portas e mantém o MySQL em uma rede interna.
+
+Para atualizar depois:
+
+```bash
+cd /opt/robo-corretoras
+sudo bash licensing/vps/update-shared-proxy.sh
+```
+
 ## 1. DNS
 
 No provedor DNS, crie um registro:
