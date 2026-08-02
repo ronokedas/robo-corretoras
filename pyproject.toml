@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "evemex-trading-bot"
-version = "1.0.3"
+version = "1.0.4"
 description = "Cliente não oficial da Evemex e robô M1 de reversão de três velas"
 requires-python = ">=3.11"
 dependencies = ["certifi>=2025.1"]

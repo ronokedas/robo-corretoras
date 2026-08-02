@@ -112,7 +112,11 @@ class LicenseClient:
         request = Request(
             self.base_url + path,
             data=json.dumps(body, separators=(",", ":")).encode("utf-8"),
-            headers={"Content-Type": "application/json", "Accept": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "User-Agent": f"EvePulseTrader/{APP_VERSION} (Windows; License Client)",
+            },
             method="POST",
         )
         try:
@@ -124,9 +128,17 @@ class LicenseClient:
         except HTTPError as exc:
             try:
                 data = json.loads(exc.read().decode("utf-8"))
-                message = data.get("message", "Licença recusada pelo servidor.")
+                message = data.get("message") or data.get("detail")
+                if data.get("error_code") == 1010:
+                    message = "A proteção do site bloqueou o aplicativo. Atualize o EvePulse e tente novamente."
+                if not message:
+                    message = "Licença recusada pelo servidor."
             except (ValueError, AttributeError):
-                message = "Licença recusada pelo servidor."
+                message = (
+                    "Acesso à API de licenças bloqueado."
+                    if exc.code == 403
+                    else "Licença recusada pelo servidor."
+                )
             raise LicenseError(str(message), status=exc.code) from exc
         except (URLError, TimeoutError, OSError, ValueError) as exc:
             raise LicenseError("Servidor de licenças indisponível.") from exc

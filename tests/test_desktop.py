@@ -1,6 +1,8 @@
 import base64
+import io
 import json
 from datetime import datetime, timedelta, timezone
+from urllib.error import HTTPError
 
 from nacl.signing import SigningKey
 
@@ -34,3 +36,47 @@ def test_signed_lease_rejects_tampering(tmp_path, monkeypatch):
         pass
     else:
         raise AssertionError("lease adulterada foi aceita")
+
+
+def test_license_request_identifies_evepulse(tmp_path, monkeypatch):
+    captured = {}
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def read(self):
+            return b'{"ok":true}'
+
+    def fake_urlopen(request, timeout):
+        captured["request"] = request
+        captured["timeout"] = timeout
+        return Response()
+
+    monkeypatch.setattr("evepulse_desktop.licensing.urlopen", fake_urlopen)
+    client = LicenseClient("https://example.com/robo", storage_dir=tmp_path)
+
+    assert client._request("/api/test", {"ok": True}) == {"ok": True}
+    assert captured["request"].get_header("User-agent").startswith("EvePulseTrader/")
+    assert captured["timeout"] == 6
+
+
+def test_cloudflare_block_has_actionable_message(tmp_path, monkeypatch):
+    payload = json.dumps({"error_code": 1010, "detail": "Access denied"}).encode()
+
+    def blocked(*_args, **_kwargs):
+        raise HTTPError("https://example.com", 403, "Forbidden", {}, io.BytesIO(payload))
+
+    monkeypatch.setattr("evepulse_desktop.licensing.urlopen", blocked)
+    client = LicenseClient("https://example.com/robo", storage_dir=tmp_path)
+
+    try:
+        client._request("/api/test", {"ok": True})
+    except LicenseError as exc:
+        assert exc.status == 403
+        assert "proteção do site" in str(exc)
+    else:
+        raise AssertionError("bloqueio do Cloudflare não foi reportado")

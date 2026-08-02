@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 APP_NAME = "EvePulse Trader"
-APP_VERSION = "1.0.3"
+APP_VERSION = "1.0.4"
 try:
     from .production_config import LICENSE_PUBLIC_KEY as BUILT_PUBLIC_KEY
     from .production_config import LICENSE_URL as BUILT_LICENSE_URL
