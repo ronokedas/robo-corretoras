@@ -1,5 +1,5 @@
 #define MyAppName "EvePulse Trader"
-#define MyAppVersion "1.0.2"
+#define MyAppVersion "1.0.3"
 #define MyAppPublisher "EvePulse"
 #define MyAppExeName "EvePulseTrader.exe"
 
@@ -12,7 +12,7 @@ DefaultDirName={autopf}\EvePulse Trader
 DefaultGroupName=EvePulse Trader
 DisableProgramGroupPage=yes
 OutputDir=..\release
-OutputBaseFilename=EvePulseTrader-Setup-1.0.2
+OutputBaseFilename=EvePulseTrader-Setup-1.0.3
 SetupIconFile=..\assets\evepulse.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/ultra64
