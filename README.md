@@ -32,7 +32,7 @@ Para recompilar e gerar o instalador:
 .\build-desktop.ps1
 ```
 
-O instalador gerado fica em `release\EvePulseTrader-Setup-1.0.3.exe`.
+O instalador gerado fica em `release\EvePulseTrader-Setup-1.0.4.exe`.
 
 Durante os testes locais, o servidor de licenças deve estar disponível em `http://127.0.0.1:8042`. Antes de distribuir a clientes, configure `EVEPULSE_LICENSE_URL` com o endereço HTTPS do VPS e gere uma nova versão.
 

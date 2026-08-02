@@ -3,7 +3,7 @@ Unicode True
 !include "x64.nsh"
 
 !define PRODUCT "EvePulse Trader"
-!define VERSION "1.0.3"
+!define VERSION "1.0.4"
 !define PUBLISHER "EvePulse"
 
 Name "${PRODUCT}"
