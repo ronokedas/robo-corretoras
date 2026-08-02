@@ -1,7 +1,6 @@
 # Insira antes do bloco "handle" geral do site principal.
-handle /robo {
-	redir /robo/ 308
-}
+@robo_root path /robo
+redir @robo_root /robo/ 308
 
 handle_path /robo/* {
 	reverse_proxy evepulse-license-api:8000
